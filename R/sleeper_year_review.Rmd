@@ -1,0 +1,52 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(rvest)
+library(jsonlite)
+library(httr)
+```
+
+```{r}
+url = 'https://api.sleeper.app/v1/league/580173188063862784/transactions/1'
+res = httr::GET(url)
+res
+```
+
+```{r}
+res_json <- rawToChar(res$content)
+df <- jsonlite::fromJSON(res_json, flatten = T) %>% 
+  as_tibble() %>% 
+  janitor::clean_names()
+names(df)
+```
+
+```{r}
+df %>% 
+  select(-starts_with("adds"), -starts_with("drops")) %>% 
+  count(creator, type)
+```
+
+```{r}
+df2 <- df %>% 
+  pivot_longer(
+    cols = c(starts_with("adds"), 
+    names_to = "add",
+    values_to = "bid"
+  ) 
+  
+df2 <- df %>% 
+  pivot_longer(
+    cols = starts_with("drops"), 
+    names_to = "key",
+    values_to = "value"
+  )  %>% view()
+
+```
+
